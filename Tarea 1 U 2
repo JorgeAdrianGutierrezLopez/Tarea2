@@ -1,0 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+def prueba_kolmogorov_smirnov(n=100, alpha=0.05):
+    """
+    Realiza la prueba de Kolmogorov-Smirnov para verificar la uniformidad de un conjunto de datos.
+
+    Args:
+        n (int, optional): Tamaño de la muestra. Defaults to 100.
+        alpha (float, optional): Nivel de significancia. Defaults to 0.05.
+
+    Returns:
+        None
+    """
+
+    # Generar datos aleatorios
+    data = np.random.uniform(0, 1, n)
+
+    # Calcular la ECDF
+    sorted_data = np.sort(data)
+    ecdf = np.arange(1, n + 1) / n
+
+    # Calcular la CDF de la distribución uniforme
+    cdf_uniform = sorted_data
+
+    # Realizar la prueba de Kolmogorov-Smirnov
+    ks_statistic, p_value = stats.ks_2samp(data, np.random.uniform(0, 1, n))
+
+    # Imprimir resultados
+    print(f"Estadístico KS: {ks_statistic:.4f}")
+    print(f"Valor p: {p_value:.4f}")
+
+    # Graficar la ECDF y la CDF
+    plt.step(sorted_data, ecdf, label='ECDF', where='post')
+    plt.plot(sorted_data, cdf_uniform, label='CDF Uniforme', color='red', linestyle='--')
+    plt.title('Prueba de Kolmogorov-Smirnov')
+    plt.xlabel('Valor')
+    plt.ylabel('Probabilidad acumulada')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    # Interpretar el valor p
+    if p_value < alpha:
+        print("Se rechaza la hipótesis nula: los datos no son uniformes.")
+    else:
+        print("No se rechaza la hipótesis nula: los datos son uniformes.")
+
+# Ejecutar la función
+prueba_kolmogorov_smirnov()
